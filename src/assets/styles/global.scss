@@ -1,4 +1,5 @@
 // global classes
+
 $hda-color-white: #fff;
 $hda-color-black: black; 
 $hda-color-primary: #14B8A6; 
@@ -8,8 +9,14 @@ $hda-weight-medium: 500;
 $hda-weight-semi: 600;
 $hda-weight-bold: 700;
 
-$hda-space: 8px;
-$hda-space-xs: 4px;
+$hda-font-size-s: 0.75rem; // 12px
+$hda-font-size: 1rem; // 16px
+$hda-font-size-m: 1.25rem; // 20px 
+$hda-font-size-l: 2rem; // 32px 
+$hda-font-size-xl: 3rem; // 48px
+$hda-font-size-xxl: 4rem; // 64px
+
+$hda-space: 0.5rem; // 8px
 $hda-space-s: $hda-space * 2;
 $hda-space-m: $hda-space * 3;
 $hda-space-l: $hda-space * 4;
