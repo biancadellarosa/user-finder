@@ -1,7 +1,5 @@
 <script setup></script>
 
 <template>
-  <router-view></router-view>
+  <h1>Finder user from GitHub</h1>
 </template>
-
-<style></style>
