@@ -10,6 +10,12 @@ module.exports = {
     "plugin:vue/base",
   ],
   rules: {
+    "vue/multi-word-component-names": [
+      "error",
+      {
+        ignores: ["Home"],
+      },
+    ],
     "vue/script-setup-uses-vars": "error",
   },
 };
