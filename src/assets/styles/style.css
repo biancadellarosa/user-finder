@@ -73,7 +73,9 @@ body {
   }
   
   a:hover,
-  a:focus {
+  a:focus,
+  button:hover,
+  button:focus {
     cursor: pointer;
   }
   

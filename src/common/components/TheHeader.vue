@@ -8,7 +8,7 @@
 <sytle scoped lang="scss">
 #header {
   position: sticky;
-  margin-bottom: $hda-space-m;
+  margin-bottom: $hda-space-xl;
   background-color: $hda-color-primary;
 
   .hedear__container {
