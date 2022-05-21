@@ -2,8 +2,6 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-import Steps from "primevue/steps";
-
 const router = useRouter();
 
 const items = ref([
@@ -19,7 +17,6 @@ const items = ref([
 const formObject = ref({});
 
 const nextPage = (event) => {
-  console.log(event);
   for (let field in event.formData) {
     formObject.value[field] = event.formData[field];
   }
@@ -31,27 +28,21 @@ const prevPage = (event) => {
   router.push(items.value[event.pageIndex - 1].to);
 };
 const complete = () => {
-  console.log("fecth data");
+  console.log(formObject.value);
 };
 </script>
 <template>
-  <div>
-    <div class="steps">
-      <Steps :model="items" :readonly="true" />
-    </div>
-
-    <router-view
-      v-slot="{ Component }"
-      :form-data="formObject"
-      @prev-page="prevPage($event)"
-      @next-page="nextPage($event)"
-      @complete="complete"
-    >
-      <keep-alive>
-        <component :is="Component"></component>
-      </keep-alive>
-    </router-view>
-  </div>
+  <router-view
+    v-slot="{ Component }"
+    :form-data="formObject"
+    @prev-page="prevPage($event)"
+    @next-page="nextPage($event)"
+    @complete="complete"
+  >
+    <keep-alive>
+      <component :is="Component"></component>
+    </keep-alive>
+  </router-view>
 </template>
 <sytle scoped lang="scss">
 .steps {
