@@ -5,8 +5,7 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 const start = () => {
-  console.log(router);
-  //router.push("/");
+  router.push("/find-user/personal-information");
 };
 </script>
 
