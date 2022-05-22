@@ -41,4 +41,7 @@ router.beforeEach((to, from) => {
   }
 });
 
+// for unittest use
+export { routes };
+
 export default router;

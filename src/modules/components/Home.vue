@@ -22,7 +22,7 @@ const start = () => {
       </p>
     </div>
 
-    <Button label="Stat" icon="pi pi-angle-right" @click="start" />
+    <Button label="Start" icon="pi pi-angle-right" @click="start" />
   </section>
 </template>
 

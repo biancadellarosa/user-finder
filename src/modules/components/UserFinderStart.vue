@@ -48,8 +48,3 @@ const complete = async (event) => {
     </keep-alive>
   </router-view>
 </template>
-<sytle scoped lang="scss">
-.steps {
-  margin-bottom: $hda-space-xl;
-}
-</sytle>

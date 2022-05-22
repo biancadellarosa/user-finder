@@ -2,6 +2,7 @@ module.exports = {
   env: {
     node: true,
     "vue/setup-compiler-macros": true,
+    vitest: true,
   },
   extends: [
     "eslint:recommended",
