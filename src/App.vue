@@ -5,7 +5,6 @@ import TheHeader from "@/common/components/TheHeader.vue";
 import TheMain from "@/common/components/TheMain.vue";
 
 const route = useRoute();
-console.log(route);
 </script>
 
 <template>

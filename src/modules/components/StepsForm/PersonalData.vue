@@ -1,48 +1,29 @@
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, watch } from "vue";
+import { storeToRefs } from "pinia";
 
-import { preventNumber } from "@/utils/helpers.js";
+import { useUserConfigurationStore } from "@/modules/store/userConfiguration";
+import { preventNumber, validationInput } from "@/utils/helpers.js";
 
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import Card from "primevue/card";
 
-const personalInformationInput = reactive({
-  firstname: { title: "Firstname", value: "" },
-  lastname: { title: "Lastname", value: "" },
-  username: { title: "Username", value: "" },
-});
-
-const isDisabled = ref(false);
-const validationErrors = reactive({});
-
-const validationInput = (target) => {
-  switch (target.id) {
-    case "firstname":
-      validationErrors.firstname = !personalInformationInput.firstname.value;
-      return;
-
-    case "lastname":
-      validationErrors.lastname = !personalInformationInput.lastname.value;
-      return;
-    case "username":
-      validationErrors.username = !personalInformationInput.username.value;
-      return;
-  }
-};
+const store = useUserConfigurationStore();
+const { personalInformation } = storeToRefs(store);
 
 const emit = defineEmits(["next-page"]);
+const isDisabled = ref(true);
 
-const nextPage = () => {
-  emit("next-page", {
-    formData: {
-      firstname: personalInformationInput.firstname.value,
-      lastname: personalInformationInput.lastname.value,
-      username: personalInformationInput.username.value,
-    },
-    pageIndex: 0,
-  });
-};
+const validationErrors = reactive({});
+
+watch(validationErrors, () => {
+  const allInputsLength = Object.keys(personalInformation.value).length;
+  if (Object.values(validationErrors).length < allInputsLength) {
+    return;
+  }
+  isDisabled.value = !Object.values(validationErrors).every((v) => v === false);
+});
 </script>
 
 <template>
@@ -54,7 +35,7 @@ const nextPage = () => {
       >
       <template #content>
         <div
-          v-for="(field, key) in personalInformationInput"
+          v-for="(field, key) in personalInformation"
           :key="field.title"
           class="personal__input"
         >
@@ -65,7 +46,9 @@ const nextPage = () => {
             :class="{
               'personal__input--invalid': validationErrors[key],
             }"
-            @blur="validationInput($event.target)"
+            @blur="
+              validationInput($event.target, validationErrors, field.value)
+            "
             @keydown="preventNumber($event)"
           ></InputText>
           <p v-if="validationErrors[key]" class="personal__message--error">
@@ -82,7 +65,11 @@ const nextPage = () => {
             icon="pi pi-angle-right"
             icon-pos="right"
             :disabled="isDisabled"
-            @click="nextPage"
+            @click="
+              emit('next-page', {
+                pageIndex: 0,
+              })
+            "
           ></Button>
         </div>
       </template>

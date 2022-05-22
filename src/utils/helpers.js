@@ -7,3 +7,7 @@ export const preventNumber = (e) => {
     e.preventDefault();
   }
 };
+
+export const validationInput = (target, validationErrors, value) => {
+  validationErrors[target.id] = !value;
+};

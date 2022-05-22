@@ -1,44 +1,26 @@
 <script setup>
-import { ref, watch } from "vue";
+import { ref, reactive, watch } from "vue";
+import { storeToRefs } from "pinia";
 
-import { preventNumber } from "@/utils/helpers.js";
+import { useUserConfigurationStore } from "@/modules/store/userConfiguration";
+import { validationInput } from "@/utils/helpers.js";
 
 import InputText from "primevue/inputtext";
-import Checkbox from "primevue/checkbox";
+import InputSwitch from "primevue/inputswitch";
 import Button from "primevue/button";
 import Card from "primevue/card";
 
-const email = ref();
-const hasAgree = ref(false);
+const store = useUserConfigurationStore();
+const { email, hasAgree } = storeToRefs(store);
 
 const isDisabled = ref(false);
-const validationErrors = ref(true);
+const validationErrors = reactive({});
 
-const validationInput = (target) => {
-  if (target.id === "email") {
-    validationErrors.value = !email.value;
-  }
-};
-
-watch(email, () => {
-  validationErrors.value = false;
+watch(email.value, () => {
+  validationInput({ id: "email" }, validationErrors, email.value.value);
 });
 
 const emit = defineEmits(["complete", "prev-page"]);
-
-const finish = () => {
-  emit("complete", {
-    formData: {
-      email: email.value,
-      hasAgree: hasAgree.value,
-    },
-    pageIndex: 1,
-  });
-};
-
-const prevPage = () => {
-  emit("prev-page", { pageIndex: 1 });
-};
 </script>
 
 <template>
@@ -54,22 +36,21 @@ const prevPage = () => {
           <label for="email">Email*</label>
           <InputText
             id="email"
-            v-model="email"
+            v-model="email.value"
             :class="{
-              'terms-service__input--invalid': validationErrors,
+              'terms-service__input--invalid': validationErrors.email,
             }"
-            @blur="validationInput($event.target)"
-            @keydown="preventNumber($event)"
           ></InputText>
-          <p v-if="validationErrors" class="terms-service__message--error">
+          <p
+            v-if="validationErrors.email"
+            class="terms-service__message--error"
+          >
             Email is required.
           </p>
         </div>
-        <div class="terms-service__input checkbox">
-          <Checkbox id="hasAgree" v-model="hasAgree" :binary="true" />
-          <label for="hasAgree"
-            >I've read and accept the terms & conditions
-          </label>
+        <div class="terms-service__input swicth">
+          <InputSwitch id="hasAgree" v-model="hasAgree" />
+          <label>I've read and accept the terms & conditions </label>
         </div>
 
         <small>(*) Required</small>
@@ -79,15 +60,19 @@ const prevPage = () => {
           <Button
             label="Back"
             icon="pi pi-angle-left"
-            class="back"
-            @click="prevPage"
+            class="p-button-text"
+            @click="emit('prev-page', { pageIndex: 1 })"
           ></Button>
           <Button
-            label="Next"
+            label="Find user"
             icon="pi pi-angle-right"
             icon-pos="right"
             :disabled="isDisabled"
-            @click="finish"
+            @click="
+              emit('complete', {
+                pageIndex: 1,
+              })
+            "
           ></Button>
         </div>
       </template>
@@ -108,8 +93,16 @@ const prevPage = () => {
     display: flex;
     flex-direction: column;
     width: 100%;
-    &.checkbox {
+    margin-bottom: $hda-space-m;
+    &.swicth {
       flex-direction: row;
+      justify-content: start;
+      align-items: center;
+      text-align: center;
+
+      label {
+        margin: 0 $hda-space;
+      }
     }
     label {
       color: $hda-color-gray;
@@ -146,7 +139,6 @@ const prevPage = () => {
   small {
     display: inline-block;
     color: $hda-color-gray;
-    margin-top: $hda-space-s;
   }
 }
 </sytle>
