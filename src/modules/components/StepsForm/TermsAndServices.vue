@@ -13,6 +13,7 @@ import Card from "primevue/card";
 const store = useUserConfigurationStore();
 const { email, hasAgree } = storeToRefs(store);
 
+// check button status
 const isDisabled = ref(store.getIsValidEmail && hasAgree.value ? false : true);
 
 watch([hasAgree, email.value], () => {
@@ -21,6 +22,7 @@ watch([hasAgree, email.value], () => {
   isDisabled.value = store.getIsValidEmail && hasAgree.value ? false : true;
 });
 
+//show feedback text on email input
 const showFeedbackText = computed(() => {
   return !store.getIsValidEmail && email.value.value !== null;
 });

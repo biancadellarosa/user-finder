@@ -17,4 +17,6 @@ app.use(router);
 app.use(PrimeVue);
 app.use(pinia);
 
-app.mount("#app");
+router.isReady().then(() => {
+  app.mount("#app");
+});

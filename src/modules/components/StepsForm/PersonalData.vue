@@ -15,6 +15,7 @@ const router = useRouter();
 const store = useUserConfigurationStore();
 const { personalInformation } = storeToRefs(store);
 
+// return true if all inputs are valid.
 const allValid = computed(() => {
   return (
     personalInformation.value.firstname.valid &&
@@ -23,7 +24,8 @@ const allValid = computed(() => {
   );
 });
 
-const changeFeedbackMessage = (key) => {
+// To not show the feedback error messange in the firts load.
+const setAsProcessedData = (key) => {
   personalInformation.value[key].processedData = true;
 };
 
@@ -60,7 +62,7 @@ const backToHome = () => {
             :class="{
               'personal__input--invalid': !field.valid && field.processedData,
             }"
-            @blur="changeFeedbackMessage(key)"
+            @blur="setAsProcessedData(key)"
             @keydown="preventNumber($event)"
           ></InputText>
           <p

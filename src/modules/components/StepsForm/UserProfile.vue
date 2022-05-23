@@ -1,18 +1,17 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { storeToRefs } from "pinia";
 import { useUserConfigurationStore } from "@/modules/store/userConfiguration";
 
 import Button from "primevue/button";
 import Card from "primevue/card";
 import Avatar from "primevue/avatar";
 import UserNotFound from "./UserNotFound.vue";
+
 import { computed } from "vue";
 
 const router = useRouter();
 const store = useUserConfigurationStore();
-const { personalInformation, email, hasAgree } = storeToRefs(store);
-const { getUserProfile, userNotFound } = store;
+const { getUserProfile, userNotFound, resetData } = store;
 
 const location = computed(() => {
   return getUserProfile.location || "not set";
@@ -34,13 +33,8 @@ const bio = computed(() => {
 });
 
 const startAgain = () => {
-  personalInformation.value = {
-    firstname: { title: "Firstname", value: null },
-    lastname: { title: "Lastname", value: null },
-    username: { title: "Username", value: null },
-  };
-  hasAgree.value = false;
-  email.value = { title: "Email", value: null };
+  // clean up data from store
+  resetData();
   router.push("/");
 };
 </script>
@@ -90,7 +84,6 @@ const startAgain = () => {
         </template>
       </Card>
     </div>
-
     <div class="github-user__buttton">
       <Button
         label="Start again"

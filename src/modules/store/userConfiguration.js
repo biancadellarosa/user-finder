@@ -5,6 +5,7 @@ export const useUserConfigurationStore = defineStore("userConfiguration", {
   state: () => {
     return {
       userProfile: {},
+      //data to crete the inputs inside PersonalData component
       personalInformation: {
         firstname: {
           title: "Firstname",
@@ -42,6 +43,31 @@ export const useUserConfigurationStore = defineStore("userConfiguration", {
         console.log(error);
         this.userNotFound = true;
       }
+    },
+
+    resetData() {
+      this.personalInformation = {
+        firstname: {
+          title: "Firstname",
+          value: null,
+          valid: false,
+          processedData: false,
+        },
+        lastname: {
+          title: "Lastname",
+          value: null,
+          valid: false,
+          processedData: false,
+        },
+        username: {
+          title: "Username",
+          value: null,
+          valid: false,
+          processedData: false,
+        },
+      };
+      this.hasAgree = false;
+      this.email = { title: "Email", value: null, valid: false };
     },
   },
   getters: {
