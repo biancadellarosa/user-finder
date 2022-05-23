@@ -1,6 +1,7 @@
 <script setup>
-import { ref, reactive, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
 
 import { useUserConfigurationStore } from "@/modules/store/userConfiguration";
 import { preventNumber, validationInput } from "@/utils/helpers.js";
@@ -9,21 +10,34 @@ import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import Card from "primevue/card";
 
+const router = useRouter();
+
 const store = useUserConfigurationStore();
 const { personalInformation } = storeToRefs(store);
 
-const emit = defineEmits(["next-page"]);
-const isDisabled = ref(true);
-
-const validationErrors = reactive({});
-
-watch(validationErrors, () => {
-  const allInputsLength = Object.keys(personalInformation.value).length;
-  if (Object.values(validationErrors).length < allInputsLength) {
-    return;
-  }
-  isDisabled.value = !Object.values(validationErrors).every((v) => v === false);
+const allValid = computed(() => {
+  return (
+    personalInformation.value.firstname.valid &&
+    personalInformation.value.lastname.valid &&
+    personalInformation.value.username.valid
+  );
 });
+
+const changeFeedbackMessage = (key) => {
+  personalInformation.value[key].processedData = true;
+};
+
+const isDisabled = ref(!allValid.value);
+
+watch([personalInformation.value], () => {
+  validationInput(personalInformation.value);
+  isDisabled.value = !allValid.value;
+});
+
+const emit = defineEmits(["next-page"]);
+const backToHome = () => {
+  router.push("/");
+};
 </script>
 
 <template>
@@ -44,14 +58,15 @@ watch(validationErrors, () => {
             :id="key"
             v-model="field.value"
             :class="{
-              'personal__input--invalid': validationErrors[key],
+              'personal__input--invalid': !field.valid && field.processedData,
             }"
-            @blur="
-              validationInput($event.target, validationErrors, field.value)
-            "
+            @blur="changeFeedbackMessage(key)"
             @keydown="preventNumber($event)"
           ></InputText>
-          <p v-if="validationErrors[key]" class="personal__message--error">
+          <p
+            v-if="!field.valid && field.processedData"
+            class="personal__message--error"
+          >
             {{ field.title }} is required.
           </p>
         </div>
@@ -60,6 +75,12 @@ watch(validationErrors, () => {
       </template>
       <template #footer>
         <div class="personal__buttton">
+          <Button
+            label="Back"
+            icon="pi pi-angle-left"
+            class="p-button-text"
+            @click="backToHome"
+          ></Button>
           <Button
             label="Next"
             icon="pi pi-angle-right"
@@ -110,7 +131,7 @@ watch(validationErrors, () => {
 
   .personal__buttton {
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
   }
 
   small {

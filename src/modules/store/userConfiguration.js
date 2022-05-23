@@ -6,17 +6,33 @@ export const useUserConfigurationStore = defineStore("userConfiguration", {
     return {
       userProfile: {},
       personalInformation: {
-        firstname: { title: "Firstname", regex: "", value: null },
-        lastname: { title: "Lastname", value: null },
-        username: { title: "Username", value: null },
+        firstname: {
+          title: "Firstname",
+          value: null,
+          valid: false,
+          processedData: false,
+        },
+        lastname: {
+          title: "Lastname",
+          value: null,
+          valid: false,
+          processedData: false,
+        },
+        username: {
+          title: "Username",
+          value: null,
+          valid: false,
+          processedData: false,
+        },
       },
       hasAgree: false,
-      email: { title: "Email", value: null },
+      email: { title: "Email", value: null, valid: false },
       userNotFound: false,
     };
   },
   actions: {
     async fetchUserProfile() {
+      this.userNotFound = this.userNotFound && false;
       try {
         const { data } = await axios.get(
           `https://api.github.com/users/${this.personalInformation.username.value}`
@@ -31,5 +47,6 @@ export const useUserConfigurationStore = defineStore("userConfiguration", {
   getters: {
     getUserProfile: (state) => state.userProfile,
     getUsername: (state) => state.personalInformation.username.value,
+    getIsValidEmail: (state) => state.email.valid,
   },
 });

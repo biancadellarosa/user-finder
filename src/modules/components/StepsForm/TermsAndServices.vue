@@ -1,9 +1,9 @@
 <script setup>
-import { ref, reactive, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import { storeToRefs } from "pinia";
 
 import { useUserConfigurationStore } from "@/modules/store/userConfiguration";
-import { validationInput } from "@/utils/helpers.js";
+import { validateEmail } from "@/utils/helpers.js";
 
 import InputText from "primevue/inputtext";
 import InputSwitch from "primevue/inputswitch";
@@ -13,11 +13,16 @@ import Card from "primevue/card";
 const store = useUserConfigurationStore();
 const { email, hasAgree } = storeToRefs(store);
 
-const isDisabled = ref(false);
-const validationErrors = reactive({});
+const isDisabled = ref(store.getIsValidEmail && hasAgree.value ? false : true);
 
-watch(email.value, () => {
-  validationInput({ id: "email" }, validationErrors, email.value.value);
+watch([hasAgree, email.value], () => {
+  validateEmail(email.value.value);
+  email.value.valid = !validateEmail(email.value.value);
+  isDisabled.value = store.getIsValidEmail && hasAgree.value ? false : true;
+});
+
+const showFeedbackText = computed(() => {
+  return !store.getIsValidEmail && email.value.value !== null;
 });
 
 const emit = defineEmits(["complete", "prev-page"]);
@@ -38,14 +43,11 @@ const emit = defineEmits(["complete", "prev-page"]);
             id="email"
             v-model="email.value"
             :class="{
-              'terms-service__input--invalid': validationErrors.email,
+              'terms-service__input--invalid': showFeedbackText,
             }"
           ></InputText>
-          <p
-            v-if="validationErrors.email"
-            class="terms-service__message--error"
-          >
-            Email is required.
+          <p v-if="showFeedbackText" class="terms-service__message--error">
+            Email is not valid. e.g example@domain.com
           </p>
         </div>
         <div class="terms-service__input swicth">
@@ -124,16 +126,6 @@ const emit = defineEmits(["complete", "prev-page"]);
   .terms-service__buttton {
     display: flex;
     justify-content: space-between;
-
-    .back {
-      background: $hda-color-gray-light;
-      border-color: $hda-color-gray-light;
-
-      &:hover {
-        background: $hda-color-gray;
-        border-color: $hda-color-gray;
-      }
-    }
   }
 
   small {

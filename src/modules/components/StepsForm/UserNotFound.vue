@@ -1,19 +1,13 @@
 <template>
-  <div class="github-user">Not found</div>
+  <div class="github-not-found">
+    <h2>Sorry! No user was found.</h2>
+    <router-link to="/find-user/personal-information">try again!</router-link>
+  </div>
 </template>
+
 <sytle lang="scss" scoped>
-.github-user {
+.github-not-found {
   margin-bottom: $hda-space-l;
-
-  @media screen and (min-width: $hda-tablet) {
-    padding: 0 $hda-space-s;
-    max-width: 700px;
-    margin: auto;
-  }
-
-  .github-user__buttton {
-    display: flex;
-    justify-content: end;
-  }
+  text-align: center;
 }
 </sytle>

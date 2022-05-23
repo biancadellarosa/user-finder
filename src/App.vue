@@ -8,7 +8,7 @@ const route = useRoute();
 </script>
 
 <template>
-  <TheHeader>HEADER</TheHeader>
+  <TheHeader>Some beautiful heard should be here!</TheHeader>
   <TheMain>
     <router-view :key="route.fullPath"></router-view>
   </TheMain>
